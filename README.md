@@ -25,7 +25,7 @@ First, add the following requirement to your project's `src/project.cr` file:
 require "marten_redis_session"
 ```
 
-Then you can configure your project to use the Redis session store by ensuring that the [`sessions.store`](https://martenframework.com/docs/development/reference/settings#store) setting is set to `:redis` as follows:
+Then you can configure your project to use the Redis session store by ensuring that the [`sessions.store`](https://martenframework.com/docs/development/reference/settings#store) setting is set to `:redis`:
 
 ```crystal
 Marten.configure do |config|
@@ -43,7 +43,7 @@ Marten.configure do |config|
 end
 ```
 
-It should be noted that you can also leverage the `redis_session.namespace` setting to configure a "namespace" for the keys that will be used to persist session data. This can be useful if your Redis instance is shared and you need to prevent conflicts between session data keys and other Redis keys. For example:
+It is also worth mentioning that you can leverage the `redis_session.namespace` setting to configure a "namespace" for the Redis keys that will be used to persist session data. This can be useful if your Redis instance is shared for various purposes and you need to prevent conflicts between session data keys and other Redis keys. For example:
 
 ```crystal
 Marten.configure do |config|
