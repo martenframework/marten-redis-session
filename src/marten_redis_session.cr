@@ -4,7 +4,7 @@ require "./marten_redis_session/settings"
 require "./marten_redis_session/store"
 
 module MartenRedisSession
-  VERSION = "0.1.0.dev"
+  VERSION = "0.1.0"
 end
 
 # Registers the Redis session store.
