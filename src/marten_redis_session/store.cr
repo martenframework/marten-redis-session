@@ -3,6 +3,10 @@ module MartenRedisSession
   class Store < Marten::HTTP::Session::Store::Base
     @client : Redis::Client? = nil
 
+    def clear_expired_entries : Nil
+      # No need to do anything here since Redis session keys are configured with the right expiry time already.
+    end
+
     def create : Nil
       @session_key = gen_session_key
       persist_session_data

@@ -5,6 +5,20 @@ describe MartenRedisSession::Store do
     get_redis_client.flushdb
   end
 
+  describe "#clear_expired_entries" do
+    it "does nothing" do
+      store = MartenRedisSession::Store.new(nil)
+
+      store["foo"] = "bar"
+      store.save
+
+      store.clear_expired_entries.should be_nil
+
+      client = get_redis_client
+      client.get(store.session_key.to_s).should eq({"foo" => "bar"}.to_json)
+    end
+  end
+
   describe "#create" do
     it "creates a new session entry without data" do
       store = MartenRedisSession::Store.new(nil)
