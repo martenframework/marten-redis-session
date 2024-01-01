@@ -59,6 +59,9 @@ Lint/ShadowedException:
 Lint/ShadowingOuterLocalVar:
   Enabled: true
 
+Lint/SpecFilename:
+  Enabled: false
+
 Lint/UnreachableCode:
   Enabled: true
 
