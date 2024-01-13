@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (UNDER DEVELOPMENT)
+## 0.2.0 (2024-01-13)
 
 * Compatibility with Marten 0.4 (including the ability to clear expired sessions) was added.
 
