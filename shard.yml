@@ -10,7 +10,9 @@ crystal: ">= 1.6.0"
 
 dependencies:
   marten:
-    github: martenframework/marten
+    #github: martenframework/marten
+    github: Cuspid88/marten
+    branch: session_expires
   redis:
     github: jgaskins/redis
 
