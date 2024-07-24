@@ -60,12 +60,7 @@ module MartenRedisSession
 
     private def persist_session_data(data = nil)
       data = data.nil? ? "{}" : data.to_json
-      client.set(client_key(@session_key.not_nil!), data, ttl)
-    end
-
-    private def ttl
-      return expires if expires > 0
-      return Marten.settings.sessions.cookie_max_age
+      client.set(client_key(@session_key.not_nil!), data, expires_in)
     end
   end
 end
