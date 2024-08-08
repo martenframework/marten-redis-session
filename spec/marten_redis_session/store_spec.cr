@@ -261,6 +261,33 @@ describe MartenRedisSession::Store do
       )
     end
 
+    it "persists the session with a change in expiration time" do
+      store = MartenRedisSession::Store.new(nil)
+
+      store.expires_in = Time::Span.new(hours: 48).total_seconds.to_i
+      store.save
+
+      client = get_redis_client
+      client.get(store.session_key.to_s).should eq "{}"
+      client.ttl(store.session_key.to_s).should eq(
+        Time::Span.new(hours: 48).total_seconds.to_i
+      )
+    end
+
+    it "ttl is not affected by the #expires_at_browser_close option" do
+      store = MartenRedisSession::Store.new(nil)
+
+      store.expires_in = Time::Span.new(hours: 48).total_seconds.to_i
+      store.expires_at_browser_close = true
+      store.save
+
+      client = get_redis_client
+      client.get(store.session_key.to_s).should eq "{}"
+      client.ttl(store.session_key.to_s).should eq(
+        Time::Span.new(hours: 48).total_seconds.to_i
+      )
+    end
+
     it "makes use of the configured namespace" do
       Marten.settings.redis_session.namespace = "ns"
 
