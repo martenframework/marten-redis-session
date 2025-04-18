@@ -75,7 +75,7 @@ describe MartenRedisSession::Store do
   describe "#flush" do
     it "destroys the entry associated with the store session key if it exists" do
       client = get_redis_client
-      client.set("testkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("testkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
       store.flush
@@ -85,8 +85,8 @@ describe MartenRedisSession::Store do
 
     it "only destroys the entry associated with the store session key and does not impact other keys" do
       client = get_redis_client
-      client.set("testkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
-      client.set("otherkey", %{{"test": "xyz"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("testkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("otherkey", %{{"test": "xyz"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
       store.flush
@@ -97,7 +97,7 @@ describe MartenRedisSession::Store do
 
     it "completes successfully if no entry exists for the store session key" do
       client = get_redis_client
-      client.set("otherkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("otherkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
       store.flush
@@ -107,7 +107,7 @@ describe MartenRedisSession::Store do
 
     it "marks the store as modified" do
       client = get_redis_client
-      client.set("testkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("testkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
       store.flush
@@ -124,7 +124,7 @@ describe MartenRedisSession::Store do
 
     it "resets the store session hash" do
       client = get_redis_client
-      client.set("testkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("testkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
       store.flush
@@ -137,7 +137,7 @@ describe MartenRedisSession::Store do
       Marten.settings.redis_session.namespace = "ns"
 
       client = get_redis_client
-      client.set("ns:testkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("ns:testkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
       store.flush
@@ -151,7 +151,7 @@ describe MartenRedisSession::Store do
   describe "#load" do
     it "retrieves the session data from Redis and loads the session hash from it" do
       client = get_redis_client
-      client.set("testkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("testkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
       store.load
@@ -161,7 +161,7 @@ describe MartenRedisSession::Store do
 
     it "does not load the session hash if the session data is expired" do
       client = get_redis_client
-      client.set("testkey", %{{"foo": "bar"}}, 1)
+      client.set("testkey", %{{"foo": "bar"}}, ex: 1)
 
       sleep 1.5
 
@@ -181,7 +181,7 @@ describe MartenRedisSession::Store do
 
     it "resets the session key if the session entry cannot be loaded because it is expired" do
       client = get_redis_client
-      client.set("testkey", %{{"foo": "bar"}}, 1)
+      client.set("testkey", %{{"foo": "bar"}}, ex: 1)
 
       sleep 1.5
 
@@ -209,7 +209,7 @@ describe MartenRedisSession::Store do
       Marten.settings.redis_session.namespace = "ns"
 
       client = get_redis_client
-      client.set("ns:testkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("ns:testkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
       store.load
@@ -248,7 +248,7 @@ describe MartenRedisSession::Store do
 
     it "persists the session data as expected if an entry was created before and updates the expiry time" do
       client = get_redis_client
-      client.set("testkey", %{{"foo": "bar"}}, Time::Span.new(hours: 48).total_seconds.to_i)
+      client.set("testkey", %{{"foo": "bar"}}, ex: Time::Span.new(hours: 48).total_seconds.to_i)
 
       store = MartenRedisSession::Store.new("testkey")
 
