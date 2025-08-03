@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 (UNDER DEVELOPMENT)
+## 0.3.0 (2025-08-03)
 
 * Compatibility with Marten 0.6 (with the ability to use custom session expiry durations) was added.
 * Add support for the v0.12 of the Redis shard.
