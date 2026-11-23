@@ -1,7 +1,8 @@
 module MartenRedisSession
   # Redis session store.
   class Store < Marten::HTTP::Session::Store::Base
-    @client : Redis::Client? = nil
+    @@client : Redis::Client? = nil
+    @@client_lock = Mutex.new
 
     def clear_expired_entries : Nil
       # No need to do anything here since Redis session keys are configured with the right expiry time already.
@@ -36,11 +37,13 @@ module MartenRedisSession
     end
 
     private def client : Redis::Client
-      @client = if (uri = Marten.settings.redis_session.uri).nil?
-                  Redis::Client.new
-                else
-                  Redis::Client.new(URI.parse(uri))
-                end
+      @@client_lock.synchronize do
+        @@client ||= if (uri = Marten.settings.redis_session.uri).nil?
+                       Redis::Client.new
+                     else
+                       Redis::Client.new(URI.parse(uri))
+                     end
+      end
     end
 
     private def client_key(key : String) : String
