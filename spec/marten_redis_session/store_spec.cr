@@ -1,5 +1,12 @@
 require "./spec_helper"
 
+# Reaches the private client. A subclass gets its own class variables, so the client starts unset here.
+class MartenRedisSession::StoreSpecProbe < MartenRedisSession::Store
+  def probe_client : Redis::Client
+    client
+  end
+end
+
 describe MartenRedisSession::Store do
   before_each do
     get_redis_client.flushdb
@@ -304,5 +311,24 @@ describe MartenRedisSession::Store do
     ensure
       Marten.settings.redis_session.namespace = nil
     end
+  end
+
+  it "reuses its Redis connections across store instances" do
+    MartenRedisSession::Store.new(nil).create
+
+    client = get_redis_client
+    accepted = -> { client.run({"info", "stats"}).as(String)[/total_connections_received:(\d+)/, 1].to_i }
+    before = accepted.call
+
+    10.times { MartenRedisSession::Store.new(nil).create }
+
+    accepted.call.should eq before
+  end
+
+  it "builds a single Redis client when stores connect concurrently" do
+    clients = Channel(Redis::Client).new
+    20.times { spawn { clients.send MartenRedisSession::StoreSpecProbe.new(nil).probe_client } }
+
+    Array.new(20) { clients.receive }.uniq.size.should eq 1
   end
 end
